@@ -42,7 +42,29 @@ const getAllIssues = async (req: Request, res: Response) => {
   }
 };
 
+const getSingleIssues = async (req: Request, res: Response) => {
+  const { id } = req.params;
+  try {
+    const result = await AuthIssuesService.getSingleIssue(id as string);
+
+    sendResponse(res, {
+      statusCode: 200,
+      success: true,
+      message: "get single issues",
+      data: result,
+    });
+  } catch (error: any) {
+    sendResponse(res, {
+      statusCode: 500,
+      success: false,
+      message: error.message,
+      error: error,
+    });
+  }
+};
+
 export const AuthIssuesController = {
   createIssue,
   getAllIssues,
+  getSingleIssues,
 };

@@ -76,7 +76,43 @@ const getAllIssues = async (query: any) => {
   return finalData;
 };
 
+const getSingleIssue = async (id: string) => {
+  const result = await pool.query(`SELECT * FROM issues WHERE id=$1`, [
+    id as string,
+  ]);
+  const issue = result.rows[0];
+  if (!issue) {
+    throw new Error("Issue not found");
+  }
+
+  // get reporter
+  const reporterResult = await pool.query(
+    `
+      SELECT id,name,role
+      FROM users
+      WHERE id = $1
+      `,
+    [issue.reporter_id],
+  );
+
+  // final response
+  const finalData = {
+    id: issue.id,
+    title: issue.title,
+    description: issue.description,
+    type: issue.type,
+    status: issue.status,
+
+    reporter: reporterResult.rows[0],
+
+    created_at: issue.created_at,
+    updated_at: issue.updated_at,
+  };
+  return finalData
+};
+
 export const AuthIssuesService = {
   create,
-  getAllIssues
+  getAllIssues,
+  getSingleIssue,
 };
