@@ -30,7 +30,7 @@ const login = async (req: Request, res: Response) => {
       message: "Login Successfully",
       data: result,
     });
-  } catch (error:any) {
+  } catch (error: any) {
     sendResponse(res, {
       statusCode: 500,
       success: false,
@@ -39,26 +39,30 @@ const login = async (req: Request, res: Response) => {
     });
   }
 };
-const refreshToken =async(req:Request,res:Response)=>{
-    try {
-       const result =await AuthService.generateRefreshToken(req.cookies.refreshToken)
+const refreshToken = async (req: Request, res: Response) => {
+  try {
+    const result = await AuthService.generateRefreshToken(
+      req.cookies.refreshToken,
+    );
 
-       res.status(200).json({
-        success:true,
-        message:"Refresh Token",
-        data:result
-
-       })
-    } catch (error:any) {
-        res.status(500).json({
-            message:error.message,
-            error:error
-        })
-    }
-}
+    sendResponse(res, {
+      statusCode: 200,
+      success: true,
+      message: "Login Successfully",
+      data: result,
+    });
+  } catch (error: any) {
+    sendResponse(res, {
+      statusCode: 500,
+      success: false,
+      message: error.message,
+      error: error,
+    });
+  }
+};
 
 export const AuthController = {
   signup,
   login,
-  refreshToken
+  refreshToken,
 };
