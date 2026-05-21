@@ -8,4 +8,5 @@ route.post("/", auth, AuthIssuesController.createIssue);
 route.get("/", AuthIssuesController.getAllIssues);
 route.get("/:id", AuthIssuesController.getSingleIssues);
 route.patch("/:id", auth, AuthIssuesController.updateIssue);
+route.delete("/:id",auth,AuthIssuesController.deleteIssue)
 export const AuthIssues = route;

@@ -129,8 +129,6 @@ const updateIssue = async (id: string, payload: any, user: any) => {
     throw new Error("Issue not found");
   }
 
-  // permission check
-
   // maintainer can update any issue
   if (user.role !== "maintainer") {
     // contributor can update only own issue
@@ -164,9 +162,44 @@ const updateIssue = async (id: string, payload: any, user: any) => {
   return result.rows[0];
 };
 
+const deleteIssue = async (id: string, user: any) => {
+  // only maintainer
+  if (user.role !== "maintainer") {
+    throw new Error("Only maintainer can delete issue");
+  }
+
+  // check issue
+  const issueResult = await pool.query(
+    `
+    SELECT *
+    FROM issues
+    WHERE id = $1
+    `,
+    [id],
+  );
+
+  const issue = issueResult.rows[0];
+
+  if (!issue) {
+    throw new Error("Issue not found");
+  }
+
+  // delete issue
+  await pool.query(
+    `
+    DELETE FROM issues
+    WHERE id = $1
+    `,
+    [id],
+  );
+
+  return;
+};
+
 export const AuthIssuesService = {
   create,
   getAllIssues,
   getSingleIssue,
-  updateIssue
+  updateIssue,
+  deleteIssue,
 };
