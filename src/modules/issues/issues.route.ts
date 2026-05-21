@@ -5,6 +5,7 @@ import { AuthIssuesController } from "./issues.controller";
 const route = Router();
 
 route.post("/", auth, AuthIssuesController.createIssue);
-route.get("/",AuthIssuesController.getAllIssues)
-route.get("/:id",AuthIssuesController.getSingleIssues)
+route.get("/", AuthIssuesController.getAllIssues);
+route.get("/:id", AuthIssuesController.getSingleIssues);
+route.patch("/:id", auth, AuthIssuesController.updateIssue);
 export const AuthIssues = route;

@@ -108,11 +108,65 @@ const getSingleIssue = async (id: string) => {
     created_at: issue.created_at,
     updated_at: issue.updated_at,
   };
-  return finalData
+  return finalData;
+};
+
+const updateIssue = async (id: string, payload: any, user: any) => {
+  console.log(user.role);
+  // find issue
+  const issueResult = await pool.query(
+    `
+    SELECT *
+    FROM issues
+    WHERE id = $1
+    `,
+    [id],
+  );
+
+  const issue = issueResult.rows[0];
+
+  if (!issue) {
+    throw new Error("Issue not found");
+  }
+
+  // permission check
+
+  // maintainer can update any issue
+  if (user.role !== "maintainer") {
+    // contributor can update only own issue
+    if (issue.reporter_id !== user.id) {
+      throw new Error("You cannot update this issue");
+    }
+
+    // contributor can update only open issue
+    if (issue.status !== "open") {
+      throw new Error("You can update only open issues");
+    }
+  }
+
+  const { title, description, type } = payload;
+
+  // update issue
+  const result = await pool.query(
+    `
+    UPDATE issues
+    SET
+      title = $1,
+      description = $2,
+      type = $3,
+      updated_at = CURRENT_TIMESTAMP
+    WHERE id = $4
+    RETURNING *
+    `,
+    [title, description, type, id],
+  );
+
+  return result.rows[0];
 };
 
 export const AuthIssuesService = {
   create,
   getAllIssues,
   getSingleIssue,
+  updateIssue
 };

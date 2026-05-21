@@ -63,8 +63,33 @@ const getSingleIssues = async (req: Request, res: Response) => {
   }
 };
 
+const updateIssue = async (req: Request, res: Response) => {
+  try {
+    const result = await AuthIssuesService.updateIssue(
+      req.params.id as string,
+      req.body,
+      req.user,
+    );
+
+    sendResponse(res, {
+      statusCode: 200,
+      success: true,
+      message: "issues updated successfully",
+      data: result,
+    });
+  } catch (error: any) {
+     sendResponse(res, {
+      statusCode: 500,
+      success: false,
+      message: error.message,
+      error: error,
+    });
+  }
+};
+
 export const AuthIssuesController = {
   createIssue,
   getAllIssues,
   getSingleIssues,
+  updateIssue
 };
