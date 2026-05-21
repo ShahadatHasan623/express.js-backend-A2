@@ -97,15 +97,17 @@ const deleteIssue = async (
       req.user
     );
 
-    res.status(200).json({
+    sendResponse(res, {
+      statusCode: 200,
       success: true,
-      message:
-        "Issue deleted successfully",
+      message: "issues deleted successfully",
     });
   } catch (error: any) {
-    res.status(400).json({
+     sendResponse(res, {
+      statusCode: 500,
       success: false,
       message: error.message,
+      error: error,
     });
   }
 };
