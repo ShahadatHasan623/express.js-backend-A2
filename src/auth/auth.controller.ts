@@ -39,7 +39,26 @@ const login = async (req: Request, res: Response) => {
     });
   }
 };
+const refreshToken =async(req:Request,res:Response)=>{
+    try {
+       const result =await AuthService.generateRefreshToken(req.cookies.refreshToken)
+
+       res.status(200).json({
+        success:true,
+        message:"Refresh Token",
+        data:result
+
+       })
+    } catch (error:any) {
+        res.status(500).json({
+            message:error.message,
+            error:error
+        })
+    }
+}
+
 export const AuthController = {
   signup,
-  login
+  login,
+  refreshToken
 };
